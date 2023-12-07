@@ -2,8 +2,7 @@ import React, { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import { addScales } from "../features/EscalasSlice";
 
-const FormBusquedaVuelos = memo(
-  () => {
+const FormBusquedaVuelos = memo(() => {
     useEffect(() => {
       console.log("rednder form busqueda");
     });

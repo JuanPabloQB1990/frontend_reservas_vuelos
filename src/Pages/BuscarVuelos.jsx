@@ -5,7 +5,6 @@ import ResultadoVuelos from '../Components/ResultadoVuelos';
 
 const FormBuscarVuelos = () => {
     
-    
     useEffect(() => {
       console.log("render buscar vuelos");
     });

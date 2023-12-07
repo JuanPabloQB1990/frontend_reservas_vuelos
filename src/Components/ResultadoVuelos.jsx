@@ -11,7 +11,7 @@ const ResultadoVuelos = memo(() => {
     const [destino, setDestino] = useState("");
 
     const escalas = useSelector(state => state.scales.escalas)
-console.log(escalas);
+    console.log(escalas);
     const obtenerDestino = () => {
         escalas[0].map(vuelo => {
             setDestino(vuelo.destino)
