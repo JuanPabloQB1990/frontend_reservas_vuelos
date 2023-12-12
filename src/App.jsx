@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     const auth = localStorage.getItem('auth')
     if (auth) {
-      const authParse = localStorage.JSON.parse(auth)
+      const authParse = JSON.parse(auth)
       dispatch(addToken(authParse))
     }
   }, []);

@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import  avion  from '../../public/iconos/avion.png'
+import  avion  from '../iconos/avion.png'
 import './NavBar.css'
 
 

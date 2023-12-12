@@ -1,4 +1,7 @@
 import {useState} from 'react'
+import ComponentLabel from '../Components/ComponentLabel';
+import ComponentInput from '../Components/ComponentInput';
+import ComponentButton from '../Components/ComponentButton';
 
 const FormRegister = () => {
 
@@ -40,41 +43,41 @@ const FormRegister = () => {
         setRequired({})
         setMessage(message.errorMessage)
       }
-      console.log(message);
+      
     }
     
   return (
-    <div className ='max-w-md h-full mx-auto flex justify-center items-center'>
-      <form onSubmit={handleSubmit} className='bg-[rgb(39,5,112)] text-white w-full min-h-max mt-4 py-6 flex flex-col items-center rounded-lg'>
-        <label htmlFor="nombre" className='mb-2'>Nombre:</label>
+    <div className='h-auto flex justify-center items-center py-6'>
+      <form onSubmit={handleSubmit} className='bg-[#270570] h-auto w-2/4 max-sm:w-4/5 rounded-lg flex flex-col items-center justify-center py-4'>
+        <ComponentLabel htmlFor="nombre" text="Nombre:"/>
         {required.nombre != "" && <p className='text-red-600 pb-2'>{required.nombre}</p>}
-        <input type="text" name="nombre" id="nombre" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.nombre} onChange={handleChange}/>
-        <label htmlFor="apellido" className='mb-2'>Apellido:</label>
+        <ComponentInput type="text" name="nombre" id="nombre" value={formRegister.nombre} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="apellido" text="Apellido:"/>
         {required.apellido != "" && <p className='text-red-600 pb-2'>{required.apellido}</p>}
-        <input type="text" name="apellido" id="apellido" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.apellido} onChange={handleChange}/>
-        <label htmlFor="telefono" className='mb-2'>Telefono:</label>
+        <ComponentInput type="text" name="apellido" id="apellido" value={formRegister.apellido} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="telefono" text="Telefono:"/>
         {required.telefono != "" && <p className='text-red-600 pb-2'>{required.telefono}</p>}
-        <input type="text" name="telefono" id="telefono" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.telefono} onChange={handleChange}/>
-        <label htmlFor="correo" className='mb-2'>Correo:</label>
+        <ComponentInput type="text" name="telefono" id="telefono" value={formRegister.telefono} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="correo" text="Correo:"/>
         {required.correo != "" && <p className='text-red-600 pb-2'>{required.correo}</p>}
-        <input type="email" name="correo" id="correo" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.correo} onChange={handleChange}/>
-        <label htmlFor="username" className='mb-2'>Username:</label>
+        <ComponentInput type="email" name="correo" id="correo" value={formRegister.correo} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="username" text="Username:"/>
         {required.username != "" && <p className='text-red-600 pb-2'>{required.username}</p>}
-        <input type="text" name="username" id="username" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.username} onChange={handleChange}/>
-        <label htmlFor="password" className='mb-2'>Password:</label>
+        <ComponentInput type="text" name="username" id="username" value={formRegister.username} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="password" text="Password:"/>
         {required.password != "" && <p className='text-red-600 pb-2'>{required.password}</p>}
-        <input type="text" name="password" id="password" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.password} onChange={handleChange}/>
-        <label htmlFor="pais" className='mb-2'>Pais:</label>
+        <ComponentInput type="text" name="password" id="password" value={formRegister.password} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="pais" text="País:"/>
         {required.pais != "" && <p className='text-red-600 pb-2'>{required.pais}</p>}
-        <input type="text" name="pais" id="pais" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.pais} onChange={handleChange}/>
-        <label htmlFor="ciudad" className='mb-2'>Ciudad:</label>
+        <ComponentInput type="text" name="pais" id="pais" value={formRegister.pais} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="ciudad" text="Ciudad:"/>
         {required.ciudad != "" && <p className='text-red-600 pb-2'>{required.ciudad}</p>}
-        <input type="text" name="ciudad" id="ciudad" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.ciudad} onChange={handleChange}/>
-        <label htmlFor="direccion" className='mb-2'>Direccion:</label>
+        <ComponentInput type="text" name="ciudad" id="ciudad" value={formRegister.ciudad} handleChange={handleChange}/>
+        <ComponentLabel htmlFor="direccion" text="Dirección:"/>
         {required.direccion != "" && <p className='text-red-600 pb-2'>{required.direccion}</p>}
-        <input type="text" name="direccion" id="direccion" className='mb-6 w-10/12 text-black rounded-md' value={formRegister.direccion} onChange={handleChange}/>
-        <input type="submit" value="Registrar" className="bg-[#fa503f] w-10/12 cursor-pointer mb-4 hover:bg-red-800 font-bold rounded-full py-2"/>
-        {message && <h3 className='bg-[#fa503f] text-white rounded-md px-10 py-2 font-bold'>{message}</h3> }
+        <ComponentInput type="text" name="direccion" id="direccion" value={formRegister.direccion} handleChange={handleChange}/>
+        <ComponentButton type="submit" value="Registrar"/>
+        {message && <h3 className='bg-[#fa503f] text-white rounded-md px-10 py-2 font-bold'>{message}</h3>}
         
       </form>
       
