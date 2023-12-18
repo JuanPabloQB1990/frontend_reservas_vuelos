@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import calcularTiempo from "../helpers/CalcularTiempos";
 
-
 const ResultadoVuelos = memo(() => {
 
     Modal.setAppElement("body");
@@ -15,25 +14,33 @@ const ResultadoVuelos = memo(() => {
 
     });
 
-    const [destino, setDestino] = useState("");
+    const escalas = useSelector(state => state.scales.escalas)
 
+    const [destino, setDestino] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false);
     const [escalaModal, setEscalaModal] = useState([])
+    const [cambioEscalas, setCambioEscalas] = useState([])
 
     const openModal = (escala) => {
+
         setEscalaModal(escala)
+        
         if (modalIsOpen) {
             setIsOpen(false)
+            setCambioEscalas([])
         } else {
             setIsOpen(true)
+            if (escala.length > 1) {
+            
+                setCambioEscalas([...cambioEscalas, `espera de ${calcularTiempo(new Date(escala[0].fechaLlegada), new Date(escala[1].fechaPartida))} en ${escala[0].destino} (cambio de avion)`])
+                if (escalaModal.length > 2) {
+                    setCambioEscalas([...cambioEscalas, `espera de ${calcularTiempo(new Date(escala[1].fechaLlegada), new Date(escala[2].fechaPartida))} en ${escala[1].destino} (cambio de avion)`])
+                }
+    
+            }
         }
 
-        
-
     }
-
-    const escalas = useSelector(state => state.scales.escalas)
-    console.log(escalas);
 
     const obtenerDestino = () => {
         escalas[0].map(vuelo => {
@@ -52,43 +59,67 @@ const ResultadoVuelos = memo(() => {
         content: {
             width: '70%',
             heigth: '50%',
-            margin: 'auto'
-        },
+            margin: 'auto',
+        }
     };
+    
+    let contEscala = 0
 
-
+    const comprarVuelo = (escalas) => {
+        console.log(escalas);
+    }
 
     return (
         <div>
             {
                 escalas.map((escala, key) => {
                     return (<div key={key}>
-                        <Link onClick={()=>openModal(escala)} className="border mb-4 w-full h-[100px] rounded-md shadow-lg hover:shadow-2xl cursor-pointer flex flex-row max-lg:flex-col max-lg:h-[250px]">
+                        <Link onClick={() => openModal(escala)} className="border mb-4 w-full h-auto rounded-md shadow-lg hover:shadow-2xl cursor-pointer flex flex-row max-md:flex-col max-lg:h-auto">
                             <div className="basis-1/5 p-4 flex">
                                 <p className="text-center my-4">{escala[0].aerolinea}</p>
                             </div>
                             <div className="basis-3/4 py-2">
                                 <p>{escala[0].origen} - {destino}</p>
                                 <p className="font-bold">{new Date(escala[0].fechaPartida).toLocaleDateString('es-co', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</p>
-                                <p>{new Date(escala[0].fechaPartida).getHours()}:{new Date(escala[0].fechaPartida).getMinutes()} - {escala.length > 1 ? `${escala.length} escalas` : "Directo"}</p>
+                                <p className="inline">{new Date(escala[0].fechaPartida).getHours()}:{new Date(escala[0].fechaPartida).getMinutes()} - </p>{escala.length >= 2 ? <p className="inline">{escala.length - 1} escala{escala.length > 2 ? "s" : ""}</p> : <p className="inline text-[#03a691]">Directo</p>}
                             </div>
                             <div className="basis-1/5 border-l-2 flex flex-col justify-center items-center">
                                 <p>desde</p>
                                 <PrecioTotalVuelo escala={escala} />
+                                <button className="bg-[#270570] hover:bg-[#554479] text-white py-1 px-4 my-2 rounded-md" onClick={()=>comprarVuelo(escala)}>Comprar</button>
                             </div>
                         </Link>
                     </div>)
                 })
-            }   
+            }
             <Modal isOpen={modalIsOpen} onRequestClose={openModal} style={customStyles}>
-                <h2>Escala de Vuelos</h2>
+                <div>
+                    <button className="" onClick={openModal}>X</button>
+                </div>
+
                 {
-                    modalIsOpen && escalaModal.map(vuelo => {
-                        return <p>{calcularTiempo(new Date(vuelo.fechaPartida), new Date(vuelo.fechaLlegada))}</p>
+                    modalIsOpen && escalaModal.map((vuelo, key) => {
+
+                        contEscala++
+                        
+                        return <div key={key} className="w-full p-4 m-3 border-2">
+                                    <div  className="">
+                                        <div className="flex flex-row justify-between p-4">
+                                            <div>{vuelo.aerolinea}</div>
+                                            <div className="text-center"><p >codigo: {vuelo.codVuelo}</p><p>clase: {vuelo.tipoVuelo}</p></div>
+                                        </div>
+                                        <div className="flex flex-row p-4">
+                                            <div className="basis-1/3 text-center"><p >{new Date(vuelo.fechaPartida).toLocaleDateString('es-co', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</p><p className="font-bold text-2xl">{new Date(vuelo.fechaPartida).getHours()}:{new Date(vuelo.fechaPartida).getMinutes()}</p><p>{vuelo.origen}</p></div>
+                                            <div className="basis-1/3 text-center"><p>duracion</p><p className="font-semibold">{calcularTiempo(new Date(vuelo.fechaPartida), new Date(vuelo.fechaLlegada))}</p></div>
+                                            <div className="basis-1/3 text-center"><p >{new Date(vuelo.fechaLlegada).toLocaleDateString('es-co', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</p><p className="font-bold text-2xl">{new Date(vuelo.fechaLlegada).getHours()}:{new Date(vuelo.fechaLlegada).getMinutes()}</p><p>{vuelo.destino}</p></div>
+                                        </div>                                      
+                                    </div>
+                                    {contEscala < escalaModal.length && <div className="p-4 border-2 text-center">
+                                                                            <p>{cambioEscalas[contEscala-1]}</p>
+                                                                        </div>}
+                               </div>
                     })
                 }
-
-                <button onClick={openModal}>x</button>
 
             </Modal>
         </div>
