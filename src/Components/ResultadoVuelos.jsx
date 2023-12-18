@@ -73,23 +73,23 @@ const ResultadoVuelos = memo(() => {
         <div>
             {
                 escalas.map((escala, key) => {
-                    return (<div key={key}>
-                        <Link onClick={() => openModal(escala)} className="border mb-4 w-full h-auto rounded-md shadow-lg hover:shadow-2xl cursor-pointer flex flex-row max-md:flex-col max-lg:h-auto">
-                            <div className="basis-1/5 p-4 flex">
-                                <p className="text-center my-4">{escala[0].aerolinea}</p>
-                            </div>
-                            <div className="basis-3/4 py-2">
-                                <p>{escala[0].origen} - {destino}</p>
-                                <p className="font-bold">{new Date(escala[0].fechaPartida).toLocaleDateString('es-co', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</p>
-                                <p className="inline">{new Date(escala[0].fechaPartida).getHours()}:{new Date(escala[0].fechaPartida).getMinutes()} - </p>{escala.length >= 2 ? <p className="inline">{escala.length - 1} escala{escala.length > 2 ? "s" : ""}</p> : <p className="inline text-[#03a691]">Directo</p>}
-                            </div>
-                            <div className="basis-1/5 border-l-2 flex flex-col justify-center items-center">
-                                <p>desde</p>
-                                <PrecioTotalVuelo escala={escala} />
-                                <button className="bg-[#270570] hover:bg-[#554479] text-white py-1 px-4 my-2 rounded-md" onClick={()=>comprarVuelo(escala)}>Comprar</button>
-                            </div>
-                        </Link>
-                    </div>)
+                    return (<div className="border rounded-md flex my-5 hover:shadow-lg flex-row max-md:flex-col" key={key}>
+                                <Link onClick={() => openModal(escala)} className="w-full h-[120px] max-md:h-auto cursor-pointer flex flex-row max-md:flex-col max-md:border-b-2">
+                                    <div className="basis-1/5 p-4 flex">
+                                        <p className="text-center my-4">{escala[0].aerolinea}</p>
+                                    </div>
+                                    <div className="basis-3/4 p-4">
+                                        <p>{escala[0].origen} - {destino}</p>
+                                        <p className="font-bold">{new Date(escala[0].fechaPartida).toLocaleDateString('es-co', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</p>
+                                        <p className="inline">{new Date(escala[0].fechaPartida).getHours()}:{new Date(escala[0].fechaPartida).getMinutes()} - </p>{escala.length >= 2 ? <p className="inline">{escala.length - 1} escala{escala.length > 2 ? "s" : ""}</p> : <p className="inline text-[#03a691]">Directo</p>}
+                                    </div>
+                                </Link>    
+                                <div className="basis-1/5 md:border-l-2 h-[120px] flex flex-col justify-center items-center">
+                                    <p>desde</p>
+                                    <PrecioTotalVuelo escala={escala} />
+                                    <button className="bg-[#270570] hover:bg-[#554479] text-white py-1 px-4 my-2 rounded-md" onClick={()=>comprarVuelo(escala)}>Comprar</button>
+                                </div>
+                            </div>)
                 })
             }
             <Modal isOpen={modalIsOpen} onRequestClose={openModal} style={customStyles}>

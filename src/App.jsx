@@ -28,7 +28,7 @@ function App() {
     <BrowserRouter>
     
       <Routes>
-        <Route element={<ProtectedRouters auth={auth}/>}>
+        <Route element={<ProtectedRouters/>}>
           <Route path='/vuelos/crear' element = {<FormCrearVuelo/>}/>
           <Route path='/vuelos/:page/:size' element={<ListaVuelos/>}/>
         </Route>
