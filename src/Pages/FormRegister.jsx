@@ -2,8 +2,11 @@ import {useState} from 'react'
 import ComponentLabel from '../Components/ComponentLabel';
 import ComponentInput from '../Components/ComponentInput';
 import ComponentButton from '../Components/ComponentButton';
+import Modal from 'react-modal';
 
 const FormRegister = () => {
+
+    Modal.setAppElement("body");
 
     const [formRegister, setFormRegister] = useState({
         nombre:"",
@@ -14,10 +17,11 @@ const FormRegister = () => {
         password:"",
         pais:"",
         ciudad:"",
-        direccion:"",
+        direccion:""
     });
     const [message, setMessage] = useState("");
     const [required, setRequired] = useState({});
+    const [modalIsOpen, setIsOpen] = useState(false);
 
     const handleChange = (e) => {
       setFormRegister({
@@ -42,9 +46,33 @@ const FormRegister = () => {
       } else {
         setRequired({})
         setMessage(message.errorMessage)
+        setFormRegister({
+          nombre:"",
+          apellido:"",
+          telefono:"",
+          correo:"",
+          username:"",
+          password:"",
+          pais:"",
+          ciudad:"",
+          direccion:""
+        })
+        setIsOpen(true)
       }
       
     }
+
+    const customStyles = {
+      content: {
+          width: '500px',
+          heigth: '300px',
+          margin: 'auto',
+      }
+    };
+
+  const openModal = () => {
+    setIsOpen(false)
+  }
     
   return (
     <div className='h-auto flex justify-center items-center py-6'>
@@ -80,7 +108,14 @@ const FormRegister = () => {
         {message && <h3 className='bg-[#fa503f] text-white rounded-md px-10 py-2 font-bold'>{message}</h3>}
         
       </form>
-      
+      <Modal isOpen={modalIsOpen} style={customStyles}>
+        <div>
+          <button onClick={openModal}>X</button>
+        </div>
+        <div className='flex justify-center items-center h-[300px]'>
+          <h1 className='bg-green-600 py-4 px-8 font-extrabold'>Se ha registrado satisfactoriamente</h1>
+        </div>
+      </Modal>
     </div>
   )
 }

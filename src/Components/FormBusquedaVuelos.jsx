@@ -1,12 +1,13 @@
 import React, { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import { addScales } from "../features/EscalasSlice";
+import { addError } from "../features/ErrorVueloSlice";
+
 
 const FormBusquedaVuelos = memo(() => {
-    useEffect(() => {
-      console.log("rednder form busqueda");
-    });
-
+   
+    console.log("render form busqueda");
+  
     const [formBuscar, setformBuscar] = useState({
       origen: null,
       destino: null,
@@ -32,19 +33,34 @@ const FormBusquedaVuelos = memo(() => {
       };
 
       if (fechaPartida == null) {
-        const response = await fetch(
-          `http://localhost:8090/api/vuelos/busqueda/criterio?origen=${origen}&destino=${destino}`,
-          options
-        );
-        const data = await response.json();
-        dispatch(addScales(data));
+        
+        try {
+          const response = await fetch(`http://localhost:8090/api/vuelos/busqueda/criterio?origen=${origen}&destino=${destino}`, options);
+          
+          if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.errorMessage);
+          }
+          const data = await response.json();
+          dispatch(addScales(data));
+          
+        } catch (error) {
+          dispatch(addError(error.message))
+        }
+       
       } else {
-        const response = await fetch(
-          `http://localhost:8090/api/vuelos/busqueda/criterio?origen=${origen}&destino=${destino}&fechaPartida=${fechaPartida}`,
-          options
-        );
-        const data = await response.json();
-        dispatch(addScales(data));
+        try {
+          const response = await fetch(`http://localhost:8090/api/vuelos/busqueda/criterio?origen=${origen}&destino=${destino}&fechaPartida=${fechaPartida}`, options);
+          
+          if (!response.ok) {
+            throw new Error(data.errorMessage);
+          }
+          const data = await response.json();
+          dispatch(addScales(data));
+          
+        } catch (error) {
+          dispatch(addError(error.message))
+        }
       }
     };
 
@@ -58,7 +74,7 @@ const FormBusquedaVuelos = memo(() => {
             className="mb-4 p-4 rounded-md text-black"
             value={formBuscar.origen === null ? "" : formBuscar.origen}
             onChange={handleChange}
-            placeholder="ingresa desde donde viajas"
+            placeholder="ingresa desde donde viaja"
             type="text"
             name="origen"
             id="origen"
@@ -71,7 +87,7 @@ const FormBusquedaVuelos = memo(() => {
             className="mb-4 p-4 rounded-md text-black"
             value={formBuscar.destino === null ? "" : formBuscar.destino}
             onChange={handleChange}
-            placeholder="ingresa hacia donde viajas"
+            placeholder="ingresa hacia donde viaja"
             type="text"
             name="destino"
             id="destino"

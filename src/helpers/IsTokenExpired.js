@@ -1,7 +1,7 @@
 
 
 const isTokenExpired = (token) => {
-  if (token == undefined) {
+  if (token == "") {
     return true;
   }
   

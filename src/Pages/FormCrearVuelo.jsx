@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import ComponentLabel from '../Components/ComponentLabel';
+import ComponentInput from '../Components/ComponentInput';
+import ComponentButton from '../Components/ComponentButton';
 
 const FormCrearVuelo = () => {
     const [tipoVuelos, setTipoVuelos] = useState([]);
     const [aerolineas, setAerolineas] = useState([]);
     const auth = useSelector(state => state.auth)
-
+    
     useEffect(() => {
       
       if (auth.token !== "") {
+        
         const cargarTipoVuelos = async(urlTipoVuelos, urlAerolineas) => {
+
           const options = {
               method: "GET",
               headers: { 
                 "Content-Type": "application/json", 
-                "Authorization" : "Bearer " + auth.token 
+                "Authorization" : "Bearer " + auth.token
               },
           };
 
@@ -22,32 +27,31 @@ const FormCrearVuelo = () => {
               fetch(urlTipoVuelos, options),
               fetch(urlAerolineas, options),
           ]);
-
+          
           const dataTipoVuelos = await resTipoVuelos.json();
           const dataAerolineas = await resAerolineas.json();
-    
           setTipoVuelos(dataTipoVuelos);
           setAerolineas(dataAerolineas);
           
-      }
-      const urlTipoVuelos = "http://localhost:8090/api/tipo_vuelos"
-      const urlAerolineas = "http://localhost:8090/api/aerolineas"
+        }
 
-      cargarTipoVuelos(urlTipoVuelos, urlAerolineas);
-      }
-        
+        const urlTipoVuelos = "http://localhost:8090/api/tipo_vuelos"
+        const urlAerolineas = "http://localhost:8090/api/aerolineas"
 
-    }, []);
+        cargarTipoVuelos(urlTipoVuelos, urlAerolineas);
+      }
+      
+    }, [auth.token]);
 
     const [formVuelos, setFormVuelos] = useState({
-        origen: null,
-        destino:null,
-        fechaPartida:null,
-        fechaLlegada:null,
-        precio: null,
-        asientos: null,
-        idTipoVuelo: null,
-        idAerolinea: null
+        origen: "",
+        destino:"",
+        fechaPartida:"",
+        fechaLlegada:"",
+        precio: "",
+        asientos: "",
+        idTipoVuelo: "",
+        idAerolinea: ""
     });
 
     const handleChange = (e) => {
@@ -59,7 +63,7 @@ const FormCrearVuelo = () => {
     
     const handleSubmit = async(e) => {
       e.preventDefault();
-      
+      console.log(formVuelos);
       const formEnvio = {
         origen: formVuelos.origen,
         destino:formVuelos.destino,
@@ -83,51 +87,50 @@ const FormCrearVuelo = () => {
         },
         body: JSON.stringify(formEnvio)
       };
-      const response = await fetch("http://localhost:8090/v1/flights", options)
+      const response = await fetch("http://localhost:8090/api/vuelos/vuelo", options)
       const data = await response.json();
       console.log(data);
     }
     
-
+  
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="origen">Origen</label>
-        <input value={formVuelos.origen === null ? "" : formVuelos.origen  } onChange={handleChange}  type="text" name="origen" id="origen"/>
+    <div className='h-auto flex justify-center items-center py-6'>
+      <form onSubmit={handleSubmit} className='bg-[#270570] h-auto w-2/4 max-sm:w-4/5 rounded-lg flex flex-col items-center justify-center py-4'>
+        <ComponentLabel htmlFor="origen" text="Origen:"/>
+        <ComponentInput type="text" name="origen" id="origen" value={formVuelos.origen} handleChange={handleChange}/>
+        
+        <ComponentLabel htmlFor="destino" text="destino:"/>
+        <ComponentInput type="text" name="destino" id="destino" value={formVuelos.destino} handleChange={handleChange}/>
 
-        <label htmlFor="destino">Destino</label>
-        <input value={formVuelos.destino === null ? "" : formVuelos.destino} onChange={handleChange} type="text" name="destino" id="destino"/>
+        <ComponentLabel htmlFor="fechaPartida" text="fecha partida:"/>
+        <ComponentInput type="datetime-local" name="fechaPartida" id="fechaPartida" value={formVuelos.fechaPartida} handleChange={handleChange}/>
 
-        <label htmlFor="fechaPartida">Fecha Partida</label>
-        <input value={formVuelos.fechaPartida === null ? "": formVuelos.fechaPartida} onChange={handleChange} type="datetime-local" min={Date.now()} name="fechaPartida" id="fechaPartida"/>
+        <ComponentLabel htmlFor="fechaLlegada" text="fecha llegada:"/>
+        <ComponentInput type="datetime-local" name="fechaLlegada" id="fechaLlegada" value={formVuelos.fechaLlegada} handleChange={handleChange}/>
 
-        <label htmlFor="fechaLlegada">Fecha Llegada</label>
-        <input value={formVuelos.fechaLlegada === null ? "" : formVuelos.fechaLlegada } onChange={handleChange} type="datetime-local" name="fechaLlegada" id="fechaLlegada"/>
+        <ComponentLabel htmlFor="precio" text="precio:"/>
+        <ComponentInput type="number" name="precio" id="precio" value={formVuelos.precio} handleChange={handleChange}/>
 
-        <label htmlFor="precio">Precio</label>
-        <input value={formVuelos.precio === null ? "" : formVuelos.precio } onChange={handleChange} type="number" name="precio" id="precio" />
+        <ComponentLabel htmlFor="numAsientos" text="asientos:"/>
+        <ComponentInput type="number" name="asientos" id="numAsientos" value={formVuelos.asientos} handleChange={handleChange}/>
 
-        <label htmlFor="numAsientos">Asientos</label>
-        <input value={formVuelos.asientos === null ? "" : formVuelos.numAsientos } onChange={handleChange} type="number" name="asientos" id="numAsientos" />
-
-        <label htmlFor="tipoVuelo">Seleccione el tipo de vuelo</label>
-        <select onChange={handleChange} name="idTipoVuelo" id="tipoVuelo">
+        <ComponentLabel htmlFor="tipoVuelo" text="Seleccione el tipo de vuelo:"/>
+        <select onChange={handleChange} name="idTipoVuelo" id="tipoVuelo" className='mb-4'>
             <option value="">--</option>
-            {tipoVuelos.map((tipoVuelo, key)=>{
+            {tipoVuelos.map((tipoVuelo, key) => {
               return <option key={key} value={formVuelos.idTipoVuelo === null ? "" : tipoVuelo.idTipoVuelo }>{tipoVuelo.nombre}</option>
-                    
-
             })}
         </select>
-        <label htmlFor="aerolinea">Seleccione la Aerolinea</label>
-        <select onChange={handleChange} name="idAerolinea" id="aerolinea">
+
+        <ComponentLabel htmlFor="aerolinea" text="Seleccione la Aerolinea"/>
+        <select onChange={handleChange} name="idAerolinea" id="aerolinea" className='mb-4'>
         <option value="">--</option>
             {aerolineas.map((aerolinea, key)=>{
-              return <option key={key} value={formVuelos.idAerolinea === null ? "" : formVuelos.idAerolinea }>{aerolinea.nombre}</option>
+              return <option key={key} value={formVuelos.idAerolinea === null ? "" : aerolinea.idAerolinea }>{aerolinea.nombre}</option>
             })}
         </select>
-        <input type="submit" value="Crear Vuelo" />
+        <ComponentButton type="submit" value="Crear Vuelo"/>
       </form>
     </div>
   )

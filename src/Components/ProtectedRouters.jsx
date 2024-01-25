@@ -7,9 +7,8 @@ import { useSelector } from 'react-redux';
 const ProtectedRouters = () => {
     const user = useSelector(state => state)
     const navigate = useNavigate()
-    console.log(user);
     useEffect(() => {
-        if (isTokenExpired(user.auth.token)) {
+        if (!isTokenExpired(user.auth.token) && user.auth.rol == "CLIENTE" && user.auth.rol == "EMPLEADO") {
             return navigate('/login')
         }
     }, []);

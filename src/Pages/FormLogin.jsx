@@ -3,6 +3,7 @@ import ComponentLabel from '../Components/ComponentLabel';
 import ComponentInput from '../Components/ComponentInput';
 import ComponentButton from '../Components/ComponentButton';
 import ComponentInputError from '../Components/ComponentInputError';
+import { useNavigate } from 'react-router-dom';
 
 const FormLogin = () => {
 
@@ -10,6 +11,8 @@ const FormLogin = () => {
         username:"",
         password:""
     });
+
+    const navigate = useNavigate()
 
     const [errorUsername, setErrorUserName] = useState("")
     const [errorPassword, setErrorPassword] = useState("")
@@ -52,6 +55,7 @@ const FormLogin = () => {
       }
       
       localStorage.setItem('auth', JSON.stringify(data))
+      navigate('/vuelos/buscar');
     }
     
   return (

@@ -11,10 +11,11 @@ const ResultadoVuelos = memo(() => {
 
     useEffect(() => {
         console.log("render ResultadoVuelos");
-
     });
 
     const escalas = useSelector(state => state.scales.escalas)
+    const errorMessage = useSelector(state => state.error.errorMessage)
+    console.log(errorMessage);
 
     const [destino, setDestino] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -65,14 +66,15 @@ const ResultadoVuelos = memo(() => {
     
     let contEscala = 0
 
-    const comprarVuelo = (escalas) => {
-        console.log(escalas);
+    const comprarVuelo = (escala) => {
+        console.log(escala);
     }
 
     return (
         <div>
             {
-                escalas.map((escala, key) => {
+               escalas.length > 1 ? escalas.map((escala, key) => {
+                console.log(escala);
                     return (<div className="border rounded-md flex my-5 hover:shadow-lg flex-row max-md:flex-col" key={key}>
                                 <Link onClick={() => openModal(escala)} className="w-full h-[120px] max-md:h-auto cursor-pointer flex flex-row max-md:flex-col max-md:border-b-2">
                                     <div className="basis-1/5 p-4 flex">
@@ -90,7 +92,7 @@ const ResultadoVuelos = memo(() => {
                                     <button className="bg-[#270570] hover:bg-[#554479] text-white py-1 px-4 my-2 rounded-md" onClick={()=>comprarVuelo(escala)}>Comprar</button>
                                 </div>
                             </div>)
-                })
+                }) : <h1 className="font-bold text-red-600">{errorMessage}</h1>
             }
             <Modal isOpen={modalIsOpen} onRequestClose={openModal} style={customStyles}>
                 <div>
@@ -99,7 +101,9 @@ const ResultadoVuelos = memo(() => {
 
                 {
                     modalIsOpen && escalaModal.map((vuelo, key) => {
+                        console.log(vuelo.fechaPartida);
 
+                            console.log(vuelo.fechaLlegada);
                         contEscala++
                         
                         return <div key={key} className="w-full p-4 m-3 border-2">

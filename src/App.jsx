@@ -20,13 +20,13 @@ function App() {
     const auth = localStorage.getItem('auth')
     if (auth) {
       const authParse = JSON.parse(auth)
+      console.log(authParse);
       dispatch(addToken(authParse))
     }
   }, []);
   
   return (
     <BrowserRouter>
-    
       <Routes>
         <Route element={<ProtectedRouters/>}>
           <Route path='/vuelos/crear' element = {<FormCrearVuelo/>}/>
