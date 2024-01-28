@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import NavBar from '../Components/NavBar';
 import FormBusquedaVuelos from '../Components/FormBusquedaVuelos';
 import ResultadoVuelos from '../Components/ResultadoVuelos';
 
@@ -11,7 +10,7 @@ const FormBuscarVuelos = () => {
 
     return (
         <div>
-          <NavBar/>
+          
           <div className='flex flex-row mx-12 gap-6 h-auto max-lg:flex-col'>
             <div>
               <FormBusquedaVuelos/>

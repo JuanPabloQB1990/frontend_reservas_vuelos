@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import isTokenExpired from '../helpers/IsTokenExpired'
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 
-const ProtectedRouters = ({children}) => {
+const ProtectedRoutersAdmin = ({children}) => {
     const user = useSelector(state => state)
     const navigate = useNavigate()
-    
-    if (!isTokenExpired(user.auth.token)) {            
+    console.log(user.auth.token);
+    if (!isTokenExpired(user.auth.token) || user.auth.rol == "CLIENTE") {
         return navigate('/login')
     }
     
-  return children
+    return children
 }
 
-export default ProtectedRouters
+export default ProtectedRoutersAdmin

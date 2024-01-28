@@ -3,15 +3,20 @@ import { useSelector } from 'react-redux'
 import ComponentLabel from '../Components/ComponentLabel';
 import ComponentInput from '../Components/ComponentInput';
 import ComponentButton from '../Components/ComponentButton';
+import ComponentInputError from '../Components/ComponentInputError';
 
 const FormCrearVuelo = () => {
     const [tipoVuelos, setTipoVuelos] = useState([]);
     const [aerolineas, setAerolineas] = useState([]);
+    const [required, setRequired] = useState({});
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [message, setMessage] = useState("");
     const auth = useSelector(state => state.auth)
+
     
     useEffect(() => {
       
-      if (auth.token !== "") {
+      if (auth.token != "") {
         
         const cargarTipoVuelos = async(urlTipoVuelos, urlAerolineas) => {
 
@@ -19,6 +24,7 @@ const FormCrearVuelo = () => {
               method: "GET",
               headers: { 
                 "Content-Type": "application/json", 
+                "Access-Control-Allow-Origin" : "http://localhost:5173",
                 "Authorization" : "Bearer " + auth.token
               },
           };
@@ -27,7 +33,7 @@ const FormCrearVuelo = () => {
               fetch(urlTipoVuelos, options),
               fetch(urlAerolineas, options),
           ]);
-          
+
           const dataTipoVuelos = await resTipoVuelos.json();
           const dataAerolineas = await resAerolineas.json();
           setTipoVuelos(dataTipoVuelos);
@@ -63,6 +69,9 @@ const FormCrearVuelo = () => {
     
     const handleSubmit = async(e) => {
       e.preventDefault();
+
+      setRequired({})
+
       console.log(formVuelos);
       const formEnvio = {
         origen: formVuelos.origen,
@@ -87,13 +96,20 @@ const FormCrearVuelo = () => {
         },
         body: JSON.stringify(formEnvio)
       };
+      
       const response = await fetch("http://localhost:8090/api/vuelos/vuelo", options)
-      const data = await response.json();
-      console.log(data);
+
+      if (!response.ok) {
+        const data = await response.json();
+        setRequired(data)
+        console.log(data);
+      }else{
+        const data = await response.json();
+        setMessage(data.message)
+      }
+      
     }
     
-  
-
   return (
     <div className='h-auto flex justify-center items-center py-6'>
       <form onSubmit={handleSubmit} className='bg-[#270570] h-auto w-2/4 max-sm:w-4/5 rounded-lg flex flex-col items-center justify-center py-4'>
@@ -116,7 +132,7 @@ const FormCrearVuelo = () => {
         <ComponentInput type="number" name="asientos" id="numAsientos" value={formVuelos.asientos} handleChange={handleChange}/>
 
         <ComponentLabel htmlFor="tipoVuelo" text="Seleccione el tipo de vuelo:"/>
-        <select onChange={handleChange} name="idTipoVuelo" id="tipoVuelo" className='mb-4'>
+        <select onChange={handleChange} name="idTipoVuelo" id="tipoVuelo" className='my-4'>
             <option value="">--</option>
             {tipoVuelos.map((tipoVuelo, key) => {
               return <option key={key} value={formVuelos.idTipoVuelo === null ? "" : tipoVuelo.idTipoVuelo }>{tipoVuelo.nombre}</option>
@@ -124,7 +140,7 @@ const FormCrearVuelo = () => {
         </select>
 
         <ComponentLabel htmlFor="aerolinea" text="Seleccione la Aerolinea"/>
-        <select onChange={handleChange} name="idAerolinea" id="aerolinea" className='mb-4'>
+        <select onChange={handleChange} name="idAerolinea" id="aerolinea" className='my-4'>
         <option value="">--</option>
             {aerolineas.map((aerolinea, key)=>{
               return <option key={key} value={formVuelos.idAerolinea === null ? "" : aerolinea.idAerolinea }>{aerolinea.nombre}</option>

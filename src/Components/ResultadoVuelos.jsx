@@ -1,26 +1,39 @@
 import React, { useEffect, memo, useState } from "react";
 import PrecioTotalVuelo from "./PrecioTotalVuelo";
 import Modal from 'react-modal';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import calcularTiempo from "../helpers/CalcularTiempos";
+import { addScales } from "../features/EscalasSlice";
 
 const ResultadoVuelos = memo(() => {
 
     Modal.setAppElement("body");
 
-    useEffect(() => {
-        console.log("render ResultadoVuelos");
-    });
-
     const escalas = useSelector(state => state.scales.escalas)
+    const asientos = useSelector(state => state.scales.asientos)
     const errorMessage = useSelector(state => state.error.errorMessage)
-    console.log(errorMessage);
+    const auth = useSelector(state => state.auth)
+    
+    const dispatch = useDispatch()
 
     const [destino, setDestino] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false);
     const [escalaModal, setEscalaModal] = useState([])
     const [cambioEscalas, setCambioEscalas] = useState([])
+    const [reservaRealizada, setReservaRealizada] = useState({});
+    const [message, setMessage] = useState("");
+    const [modalIsOpenMessage, setModalIsOpenMessage] = useState(false);
+
+    useEffect(() => {
+        console.log("render ResultadoVuelos");
+        if (localStorage.getItem('escalas')) {
+            const escalas = localStorage.getItem('escalas')
+            console.log(escalas)
+            const authParse = JSON.parse(escalas)
+            dispatch(addScales(authParse))
+          }
+    },[]);
 
     const openModal = (escala) => {
 
@@ -66,14 +79,56 @@ const ResultadoVuelos = memo(() => {
     
     let contEscala = 0
 
-    const comprarVuelo = (escala) => {
+    const comprarVuelo = async(escala) => {
         console.log(escala);
+
+        const escalaEnvio = {
+            idVuelo1 : escala[0].idVuelo,
+            idVuelo2 : escala[1] ? escala[1].idVuelo : null,
+            idVuelo3 : escala[2] ? escala[2].idVuelo : null,
+            asientos : asientos,
+            idCliente : auth.idCliente
+        }
+
+        console.log(escalaEnvio);
+
+        const options = {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json", 
+              "Authorization" : "Bearer " + auth.token 
+            },
+            body: JSON.stringify(escalaEnvio)
+          };
+          
+          const response = await fetch("http://localhost:8090/api/reservaciones/reservacion", options)
+    
+          if (!response.ok) {
+            const data = await response.json();
+            setMessage(data.errorMessage)
+            setModalIsOpenMessage(true)
+            console.log(data);
+          } else {
+            const data = await response.json();
+            setReservaRealizada(data)
+            console.log(data);
+          }
+
     }
+
+    const openModalMessage = () => {
+      if (modalIsOpenMessage) {
+        setModalIsOpenMessage(false)
+      } else {
+        setModalIsOpenMessage(true)
+      }
+    }
+    
 
     return (
         <div>
             {
-               escalas.length > 1 ? escalas.map((escala, key) => {
+               escalas.length >= 1 ? escalas.map((escala, key) => {
                 console.log(escala);
                     return (<div className="border rounded-md flex my-5 hover:shadow-lg flex-row max-md:flex-col" key={key}>
                                 <Link onClick={() => openModal(escala)} className="w-full h-[120px] max-md:h-auto cursor-pointer flex flex-row max-md:flex-col max-md:border-b-2">
@@ -101,7 +156,7 @@ const ResultadoVuelos = memo(() => {
 
                 {
                     modalIsOpen && escalaModal.map((vuelo, key) => {
-                        console.log(vuelo.fechaPartida);
+                        console.log(vuelo);
 
                             console.log(vuelo.fechaLlegada);
                         contEscala++
@@ -125,6 +180,9 @@ const ResultadoVuelos = memo(() => {
                     })
                 }
 
+            </Modal>
+            <Modal isOpen={modalIsOpenMessage} onRequestClose={openModalMessage} style={customStyles}>
+                
             </Modal>
         </div>
     );

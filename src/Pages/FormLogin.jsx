@@ -4,6 +4,8 @@ import ComponentInput from '../Components/ComponentInput';
 import ComponentButton from '../Components/ComponentButton';
 import ComponentInputError from '../Components/ComponentInputError';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { addToken } from '../features/AuthSlice';
 
 const FormLogin = () => {
 
@@ -13,6 +15,7 @@ const FormLogin = () => {
     });
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [errorUsername, setErrorUserName] = useState("")
     const [errorPassword, setErrorPassword] = useState("")
@@ -30,15 +33,12 @@ const FormLogin = () => {
       setErrorUserName("")
       setErrorPassword("")
 
-      if (formLogin.username === "") {
+      if (formLogin.username === "" || formLogin.password === "") {
         setErrorUserName("El username es requerido")
-      
+        setErrorPassword("El password es requerido")
+        return
       }
 
-      if (formLogin.password === "") {
-        setErrorPassword("El password es requerido")
-      }
-      
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json"},
@@ -55,11 +55,12 @@ const FormLogin = () => {
       }
       
       localStorage.setItem('auth', JSON.stringify(data))
+      dispatch(addToken(data))
       navigate('/vuelos/buscar');
     }
     
   return (
-    <div className='h-screen flex justify-center items-center'>
+    <div className='h-[50vh] flex justify-center items-center'>
       <form onSubmit={handleSubmit} className='bg-[#270570] h-auto w-1/4 max-sm:w-4/5 rounded-lg py-4 flex flex-col items-center justify-center'>
         <ComponentLabel htmlFor="username" text="Username:"/>
         {errorUsername != "" && <ComponentInputError error={errorUsername}/>}

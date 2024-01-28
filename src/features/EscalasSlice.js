@@ -1,7 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialScales = {
-    escalas : []
+    escalas : [],
+    asientos: null
 }
 
 export const scaleSlice = createSlice({
@@ -10,9 +11,12 @@ export const scaleSlice = createSlice({
     reducers: {
         addScales: (state, action) => {
             state.escalas = action.payload;
+        },
+        addAsientos: (state, action) => {
+            state.asientos = action.payload;
         }
     }
 })
 
-export const {addScales} = scaleSlice.actions
+export const {addScales, addAsientos} = scaleSlice.actions
 export default scaleSlice.reducer

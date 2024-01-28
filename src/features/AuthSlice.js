@@ -2,7 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const initialAuth = {
     token:"",
-    rol:""
+    rol:"",
+    idCliente: null
 }
 
 export const authSlice = createSlice({
@@ -11,10 +12,15 @@ export const authSlice = createSlice({
     reducers : {
         addToken: (state, action) => {
             state.token = action.payload.accesToken,
-            state.rol = action.payload.rol
+            state.rol = action.payload.rol,
+            state.idCliente = action.payload.idCliente
+        },
+        deleteToken: (state, action) => {
+            state.token = "",
+            state.rol = ""
         }
     }
 })
 
-export const {addToken} = authSlice.actions
+export const {addToken, deleteToken} = authSlice.actions
 export default authSlice.reducer
