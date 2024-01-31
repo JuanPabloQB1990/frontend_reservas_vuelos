@@ -11,6 +11,8 @@ import { addToken, deleteToken } from './features/AuthSlice.js';
 import FormRegister from './Pages/FormRegister.jsx'
 import NavBar from './Components/NavBar.jsx'
 import ProtectedRouters from './Components/ProtectedRouters.jsx'
+import FinalizarCompraVuelo from './Pages/FinalizarCompraVuelo.jsx'
+import ListaEscalasCliente from './Pages/ListaEscalasCliente.jsx'
 
 
 function App() {
@@ -19,11 +21,9 @@ function App() {
   useEffect(() => {
     console.log("render APP");
     
-    
     if (localStorage.getItem('auth')) {
-      const auth = localStorage.getItem('auth')
-      console.log(auth)
-      const authParse = JSON.parse(auth)
+      
+      const authParse = JSON.parse(localStorage.getItem('auth'))
       dispatch(addToken(authParse))
     }else{
       
@@ -41,7 +41,10 @@ function App() {
         <Route path='/vuelos/:page/:size' element={<ProtectedRoutersAdmin><ListaVuelos/></ProtectedRoutersAdmin>}/>
         
         <Route path='/vuelos/buscar' element={<ProtectedRouters><BuscarVuelos/></ProtectedRouters>}/>
-        
+        <Route path='/vuelos/comprar' element={<ProtectedRouters><FinalizarCompraVuelo/></ProtectedRouters>}/>
+        <Route path='/vuelos/cliente/:id' element={<ProtectedRouters><ListaEscalasCliente/></ProtectedRouters>}/>
+
+
         <Route path='/login' element={<FormLogin/>}/>
         <Route path='/register' element={<FormRegister/>}/>
       </Routes>

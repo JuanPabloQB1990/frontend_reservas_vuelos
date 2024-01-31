@@ -1,20 +1,25 @@
 import React, { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
-import { addAsientos, addScales } from "../features/EscalasSlice";
+import { addFormBusqueda, addScales } from "../features/EscalasSlice";
 import { addError } from "../features/ErrorVueloSlice";
 
 const FormBusquedaVuelos = memo(() => {
 
   useEffect(() => {
-    const form = JSON.parse(localStorage.getItem('formBuscar'))
-    setformBuscar(form)
+    if (localStorage.getItem('formBuscar')) {
+      const form = JSON.parse(localStorage.getItem('formBuscar'))
+      setformBuscar(form)
+    }else{
+      setformBuscar({})
+    }
+    
   }, []);
 
   const [formBuscar, setformBuscar] = useState({
-    origen: null,
-    destino: null,
-    fechaPartida: null,
-    asientos: null,
+    origen: "",
+    destino: "",
+    fechaPartida: "",
+    asientos: "",
   });
 
   const dispatch = useDispatch();
@@ -29,8 +34,7 @@ const FormBusquedaVuelos = memo(() => {
     const { origen, destino, fechaPartida, asientos } = formBuscar;
 
     localStorage.setItem('formBuscar', JSON.stringify(formBuscar))
-    
-    dispatch(addAsientos(asientos))
+    dispatch(addFormBusqueda(formBuscar))
 
     const options = {
       method: "GET",
@@ -84,7 +88,7 @@ const FormBusquedaVuelos = memo(() => {
         </label>
         <input
           className="mb-4 p-4 rounded-md text-black"
-          value={formBuscar.origen === null ? "" : formBuscar.origen}
+          value={formBuscar.origen ? formBuscar.origen : ""}
           onChange={handleChange}
           placeholder="ingresa desde donde viaja"
           type="text"
@@ -97,7 +101,7 @@ const FormBusquedaVuelos = memo(() => {
         </label>
         <input
           className="mb-4 p-4 rounded-md text-black"
-          value={formBuscar.destino === null ? "" : formBuscar.destino}
+          value={formBuscar.destino ? formBuscar.destino : ""}
           onChange={handleChange}
           placeholder="ingresa hacia donde viaja"
           type="text"
@@ -110,9 +114,7 @@ const FormBusquedaVuelos = memo(() => {
         </label>
         <input
           className="mb-4 p-4 rounded-md text-black"
-          value={
-            formBuscar.fechaPartida === null ? "" : formBuscar.fechaPartida
-          }
+          value={formBuscar.fechaPartida ? formBuscar.fechaPartida : ""}
           onChange={handleChange}
           type="date"
           name="fechaPartida"

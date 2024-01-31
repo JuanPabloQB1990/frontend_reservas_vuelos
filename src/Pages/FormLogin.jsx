@@ -56,7 +56,17 @@ const FormLogin = () => {
       
       localStorage.setItem('auth', JSON.stringify(data))
       dispatch(addToken(data))
-      navigate('/vuelos/buscar');
+
+      // Verificamos si hay una URL almacenada en sessionStorage
+      if (sessionStorage.getItem('ultimaPaginaVisitada')) {
+        // Obtenemos la URL almacenada en sessionStorage
+        var ultimaPaginaVisitada = sessionStorage.getItem('ultimaPaginaVisitada');
+        // Redirigimos a la última página visitada
+        window.location.href = ultimaPaginaVisitada;
+      } else {
+        // En caso de que no haya una URL almacenada, redirigimos a una página por defecto
+        navigate('/vuelos/buscar');
+      }
     }
     
   return (

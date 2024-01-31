@@ -8,7 +8,6 @@ const isTokenExpired = (token) => {
   const tokenPayload = JSON.parse(atob(arrayToken[1]))
   
   if (Math.floor(new Date().getTime() /1000) >= tokenPayload?.exp || token == "") {
-    localStorage.removeItem('formBuscar')
     return false;
   }
   
